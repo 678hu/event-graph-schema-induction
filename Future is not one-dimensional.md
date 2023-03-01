@@ -30,15 +30,17 @@ Future is not one-dimensional: Graph modeling based **complex** event schema ind
 
 graph-based schema representation: events, arguments, temporal connections and argument relations
 
-文中提出了一种基于图神经网络的生成式模型(*Temporal Event Graph Model* )。通过现有的部分图谱，不断的生成新的结点和边。同时结合共指消解以及事件时序顺序预测，得到最终的schema。然后再进行schema-guided prediction
+文中提出了一种基于图神经网络的生成式模型(*Temporal Event Graph Model* )。通过现有的部分图谱，不断的生成新的结点和边。同时结合**共指消解以及事件时序顺序预测**，得到最终的schema。然后再进行schema-guided prediction
+
+![图片](https://mmbiz.qpic.cn/sz_mmbiz_png/7FDdzianu7mKUEtvXSXVK3OibBt2YHGwEAtpAVya5I3GcXqNW82SAQGAYDl40yB7icQ5HO2M9sFXoKiaeh1YtNwQYA/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1)
 
 1）**构建实例图**（每个实例图都是关于一个复杂事件）
 
-OneIE : 提取实体、关系和事件 --> perform cross document entity and event coreference resolution over the document cluster of each complex event-->进一步进行了事件-事件时间关系的提取来确定事件对的顺序-->在提取之后，为每个复杂事件构造一个实例图，其中共引用事件或实体被合并。我们将孤立的事件视为模式归纳中的不相关节点，因此在图构建过程中，它们被排除在实例图之外。
+OneIE : 提取实体、关系和事件 --> perform cross document entity and event co-reference resolution over the document cluster of each complex event-->进一步进行了事件-事件时间关系的提取来确定事件对的顺序-->在提取之后，为每个复杂事件构造一个实例图，其中共引用事件或实体被合并。我们将孤立的事件视为模式归纳中的不相关节点，因此在图构建过程中，它们被排除在实例图之外。
 
-2)**Temporal Event Graph Model** 
+2)**Temporal Event Graph Model** 时序事件图模型
 
-最大化每个实例图的概率,，基于前面的图G<i，我们预测一个事件节点ei及其参数来生成下一个图Gi.(首先根据概率生成事件节点，然后基于IE ontology添加参数节点，之后预测新生成节点与现有节点的关系，最后预测新事件与现有事件的时间关系)
+最大化每个实例图的概率,，基于前面的图G<i，我们预测一个事件节点ei及其参数来生成下一个图Gi.(**首先根据概率生成事件节点，然后基于IE ontology添加参数节点，之后预测新生成节点与现有节点的关系，最后预测新事件与现有事件的时间关系**)
 
 在传统的图生成设置中，**节点生成的顺序**可以是任意的。然而，在我们的实例图中，事件节点是通过时间关系来连接的。我们将事件排序为一个有向无环图（DAG）。考虑到每个事件可能同时有“之前”和“之后”的多个事件，我们通过使用广度优先搜索遍历图来获得生成顺序。
 
@@ -62,6 +64,14 @@ OneIE : 提取实体、关系和事件 --> perform cross document entity and eve
 
 确定要保留的虚拟边，并为它们分配关系类型，我们将关系边缘生成概率建模为关系类型上的分类分布。
 
+6）**Event Temporal Ordering Prediction**
+
+为了预测新事件和现有事件之间的时间依赖关系，我们通过时间边缘连接它们。我们在生成的最后一个阶段构建时间边，因为它依赖于共享的和相关的参数。考虑到时间边是相互依赖的，我们将生成概率建模为后续伯努利分布的混合物。
+
+7）**Training and Schema Decoding**
+
+优化负对数似然损失
+
 #### Experiment:
 
 ##### 评价标准：
@@ -81,4 +91,6 @@ OneIE : 提取实体、关系和事件 --> perform cross document entity and eve
  事件预测的实验结果如下图4所示，采用Event Language Model等三个模型作为baseline，同样测试了本文提出的Event Graph Model，并进行了消融实验。通过实验结果可以看出①针对预测任务，Event Graph Model有很大的性能提升；②通过消融实验验证了实体共指消融对事件预测任务的必要性。![图片](https://mmbiz.qpic.cn/sz_mmbiz_jpg/7FDdzianu7mKUEtvXSXVK3OibBt2YHGwEAE0OCpVEue51NPunpyQWBCtwleXvVpicJkUSSM2q9twe2Yia3H4Sx78FQ/640?wx_fmt=jpeg&wxfrom=5&wx_lazy=1&wx_co=1)
 
 #### Related Work:
+
+*schema induction* and *script learning*
 
