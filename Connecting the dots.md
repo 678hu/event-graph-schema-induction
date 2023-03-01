@@ -4,7 +4,7 @@ We thus propose a new schema representation, **Event Graph Schema**, where ***tw
 
 **事件模式（event schema）**是蕴含在事件背后的某些原理性或规律性的模式。通过研究事件的模式能够更好地弄清楚事件演变背后的底层逻辑以及真实原因。同时，通过图结构来组织事件以及事件的论元角色，能够提高可解释性也能利用图神经网络的方法。因此，事件图模式归纳（event graph schema induction）是十分必要的。
 
-本文假设当两个事件的实体参数是共引用或者语义相关的时，他们是相连的。
+*本文假设当两个事件的实体参数是共引用或者语义相关的时，他们是相连的。*
 
 #### 任务（解决的问题）： 
 
@@ -22,9 +22,9 @@ We thus propose a new schema representation, **Event Graph Schema**, where ***tw
 
 **路径语言模型**（path language model）,通过抽取（OneIE工具）重要(salient)以及连贯(coherent)的路径来构造schema。路径语言模型由两个部分构成：自回归语言模型、邻居分类模型。
 
-**salience** ：A good path should appear frequently between two event types
+**salience** 显著性：A good path should appear frequently between two event types
 
-**Coherence**: Multiple paths be tween the same pair of event types should tell a coherent story, namely they should co-occur frequently in the same discourse。 
+**Coherence** 连贯性: Multiple paths be tween the same pair of event types should tell a coherent story, namely they should co-occur frequently in the same discourse。 
 
 在两个任务上训练：1）学习一个自回归语言模型：给定路径中之前的边和节点预测一条边或节点
 
